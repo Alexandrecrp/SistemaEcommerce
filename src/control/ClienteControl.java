@@ -10,8 +10,11 @@ import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
 import model.dao.ClienteDao;
+import model.dao.ClienteDaoImpl;
 import model.domain.Cliente;
+import model.service.ServiceLocator;
 import org.jdesktop.observablecollections.ObservableCollections;
+import util.ValidacaoException;
 
 /**
  *
@@ -30,7 +33,7 @@ public class ClienteControl {
     private ClienteDao clienteDao;
     
     public ClienteControl(){
-        clienteDao = new ClienteDao();
+        clienteDao = ServiceLocator.getClienteDao();
         clientesTabela = ObservableCollections.observableList(new ArrayList<Cliente>());
         novo();
         pesquisar();
@@ -45,7 +48,8 @@ public class ClienteControl {
         clientesTabela.addAll(clienteDao.pesquisar(clienteDigitado));
     }
     
-    public void salvar(){
+    public void salvar() throws ValidacaoException {
+        clienteDigitado.validar();
         clienteDao.salvarAtualizar(clienteDigitado);
         novo();
         pesquisar();
